@@ -376,6 +376,7 @@ HARD RULES
         model=model,
         tools=[check_order_status, get_customer_tier, list_customer_orders],
         system_prompt=system_prompt,
+        name='InventoryAgent',
     )
 
 
@@ -517,6 +518,7 @@ HARD RULES
         model=model,
         tools=[get_inventory_context, initiate_refund],
         system_prompt=system_prompt,
+        name='RefundAgent',
     )
 
 
@@ -556,7 +558,16 @@ def build_policy_agent() -> Agent:
     # ── ReturnsPolicyRetrieverAgent ───────────────────────────────────
     @tool
     def retrieve_returns_policy(query: str) -> str:
-        """Retrieve relevant passages from the Returns Policy knowledge base."""
+        """
+        Retrieve relevant passages from the Returns Policy knowledge base.
+
+        Args:
+            query: The policy question to search for.
+
+        Returns:
+            The top-ranked returns policy passages, formatted with their
+            relevance score and source document, or a "no results" message.
+        """
         results = retrieve_from_knowledge_base(config.RETURNS_KB_ID, query)
         return format_kb_results(results)
 
@@ -565,12 +576,22 @@ def build_policy_agent() -> Agent:
         tools=[retrieve_returns_policy],
         system_prompt=_RETRIEVER_PROMPT.format(
             domain='Returns', tool_name='retrieve_returns_policy'),
+        name='ReturnsPolicyRetrieverAgent',
     )
 
     # ── ShippingPolicyRetrieverAgent ──────────────────────────────────
     @tool
     def retrieve_shipping_policy(query: str) -> str:
-        """Retrieve relevant passages from the Shipping Policy knowledge base."""
+        """
+        Retrieve relevant passages from the Shipping Policy knowledge base.
+
+        Args:
+            query: The policy question to search for.
+
+        Returns:
+            The top-ranked shipping policy passages, formatted with their
+            relevance score and source document, or a "no results" message.
+        """
         results = retrieve_from_knowledge_base(config.SHIPPING_KB_ID, query)
         return format_kb_results(results)
 
@@ -579,12 +600,22 @@ def build_policy_agent() -> Agent:
         tools=[retrieve_shipping_policy],
         system_prompt=_RETRIEVER_PROMPT.format(
             domain='Shipping', tool_name='retrieve_shipping_policy'),
+        name='ShippingPolicyRetrieverAgent',
     )
 
     # ── WarrantyPolicyRetrieverAgent ──────────────────────────────────
     @tool
     def retrieve_warranty_policy(query: str) -> str:
-        """Retrieve relevant passages from the Warranty Policy knowledge base."""
+        """
+        Retrieve relevant passages from the Warranty Policy knowledge base.
+
+        Args:
+            query: The policy question to search for.
+
+        Returns:
+            The top-ranked warranty policy passages, formatted with their
+            relevance score and source document, or a "no results" message.
+        """
         results = retrieve_from_knowledge_base(config.WARRANTY_KB_ID, query)
         return format_kb_results(results)
 
@@ -593,6 +624,7 @@ def build_policy_agent() -> Agent:
         tools=[retrieve_warranty_policy],
         system_prompt=_RETRIEVER_PROMPT.format(
             domain='Warranty', tool_name='retrieve_warranty_policy'),
+        name='WarrantyPolicyRetrieverAgent',
     )
 
     @tool
@@ -703,6 +735,7 @@ HARD RULES
         model=coordinator_model,
         tools=[search_all_policies],
         system_prompt=coordinator_prompt,
+        name='PolicyAgent',
     )
 
 
@@ -784,6 +817,7 @@ HARD RULES
         model=model,
         tools=[get_full_workflow_context],
         system_prompt=system_prompt,
+        name='CommunicationAgent',
     )
 
 
@@ -1026,6 +1060,7 @@ then finish with the communication agent."""
             route_to_communication_agent,
         ],
         system_prompt=system_prompt,
+        name='OrchestratorAgent',
     )
 
 
