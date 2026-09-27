@@ -1,0 +1,18 @@
+# Environment - holds live Knowledge Base IDs, runtime ARN and guardrail ID
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# AgentCore CLI build output and deployment state
+build/
+agentcore/.cli/
+deploy.log
+tests.log
+scenarios.log
+
+# OS
+.DS_Store
